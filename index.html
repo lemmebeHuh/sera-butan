@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERA - Platform Kerja Serabutan Mahasiswa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        /* CSS VARIABLES & PALETTE */
+        :root { --primary: #1a1a1a; --yellow: #ffcc00; --red: #e63b2e; --blue: #0055ff; --bg-color: #f5f0e8; --white: #ffffff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--primary); }
+        h1, h2, h3, .headline { font-family: 'Space Grotesk', sans-serif; text-transform: uppercase; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 600; vertical-align: middle; }
+
+        /* NEO-BRUTALISM */
+        .neo-border { border: 4px solid var(--primary); }
+        .neo-border-b { border-bottom: 4px solid var(--primary); }
+        .neo-border-t { border-top: 4px solid var(--primary); }
+        .neo-shadow { box-shadow: 4px 4px 0px 0px var(--primary); }
+        .bauhaus-shadow { box-shadow: 6px 6px 0px 0px var(--primary); }
+        .neo-btn { display: inline-block; cursor: pointer; text-align: center; font-family: 'Space Grotesk', sans-serif; font-weight: 900; text-transform: uppercase; transition: all 0.1s ease-in-out; border: 4px solid var(--primary); }
+        .neo-btn:active { transform: translate(4px, 4px); box-shadow: none !important; }
+        .neo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* MODALS & AUTH */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(26,26,26,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-content { background-color: var(--bg-color); max-width: 500px; width: 100%; padding: 2rem; max-height: 90vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 10px; cursor: pointer; background: var(--red); color: white; border: 2px solid var(--primary); border-radius: 50%; padding: 2px; }
+        .modal-content h2 { font-size: 1.5rem; margin-bottom: 1rem; background: var(--yellow); display: inline-block; padding: 0.2rem 0.5rem; }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-family: 'Space Grotesk', sans-serif; font-weight: bold; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .form-control { width: 100%; background: transparent; border: none; border-bottom: 4px solid var(--primary); padding: 0.75rem 0; font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; }
+        .form-control:focus { background-color: rgba(255, 204, 0, 0.1); }
+        .form-control:disabled { background-color: rgba(26,26,26,0.05); cursor: not-allowed; }
+
+        /* APP SHELL */
+        #app-container { display: none; padding-top: 5rem; padding-bottom: 6rem; max-width: 600px; margin: 0 auto; }
+        header { position: fixed; top: 0; left: 0; width: 100%; height: 4rem; background-color: var(--bg-color); z-index: 1000; display: flex; justify-content: space-between; align-items: center; padding: 0 1.5rem; }
+        header h1 { font-size: 1.5rem; font-weight: 900; font-style: italic; }
+        nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 5rem; background-color: var(--bg-color); z-index: 1000; display: flex; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 2px solid rgba(26,26,26,0.1); color: var(--primary); background: transparent; border-top: none; border-bottom: none; border-left: none; cursor: pointer; }
+        .nav-item.active { background-color: var(--yellow); font-weight: bold; border-left: 2px solid var(--primary); border-right: 2px solid var(--primary); }
+        .nav-item span.label { font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem; font-weight: 700; margin-top: 0.25rem;}
+
+        /* PAGES */
+        .page-section { display: none; padding: 1rem; }
+        .page-section.active { display: block; }
+        .hero-banner { background: var(--yellow); padding: 1.5rem; margin-bottom: 1.5rem; }
+
+        /* JOB CARDS */
+        .job-card { background: var(--white); margin-bottom: 1.5rem; }
+        .job-header { padding: 1rem; border-bottom: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .job-status { background: var(--red); color: var(--white); padding: 0.2rem 0.5rem; font-size: 0.7rem; font-weight: bold; border: 2px solid var(--primary); }
+        .job-status.TAKEN { background: var(--blue); }
+        .job-status.COMPLETED { background: var(--primary); }
+        .job-price { background: var(--yellow); font-family: 'Space Grotesk', sans-serif; font-weight: 900; font-size: 1.2rem; padding: 0.2rem 0.5rem; border: 2px solid var(--primary); }
+        .job-body { padding: 1rem; }
+        .job-meta { font-size: 0.75rem; font-weight: bold; margin-bottom: 1rem; color: #4a4a4a; }
+        .btn-action { width: 100%; background: var(--bg-color); padding: 0.8rem; font-size: 1rem; }
+        .btn-wa { background: #25D366; color: white; width: 100%; padding: 1rem; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+
+        /* STATS BOX */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-box { background: var(--white); padding: 1.5rem 1rem; text-align: center; }
+        .stat-num { font-family: 'Space Grotesk', sans-serif; font-weight: 900; font-size: 2.5rem; line-height: 1; margin-bottom: 0.5rem; color: var(--blue); }
+        .stat-label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+
+        /* TABS MY JOBS */
+        .tabs { display: flex; margin-bottom: 1rem; }
+        .tab-btn { flex: 1; padding: 0.5rem; background: var(--bg-color); border: 2px solid var(--primary); font-family: 'Space Grotesk', sans-serif; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: var(--primary); color: var(--white); }
+        
+        .truncate-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <!-- TERMS MODAL (Diperbarui dengan teks lengkap) -->
+    <div id="terms-modal" class="overlay">
+        <div class="modal-content neo-border bauhaus-shadow" style="max-width: 600px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">SYARAT & KETENTUAN SERA</h2>
+            
+            <div style="font-size: 0.85rem; line-height: 1.6; max-height: 50vh; overflow-y: auto; padding-right: 10px; margin-bottom: 1.5rem; border: 2px solid var(--primary); padding: 1rem; background: rgba(255,255,255,0.5);">
+                <p><strong>1. Deskripsi Layanan</strong><br>SERA adalah wadah penghubung antar mahasiswa STMIK Bandung untuk berbagi tugas/pekerjaan lepas (freelance) secara sukarela dan mandiri. Platform ini bersifat non-profit dan tidak memungut biaya administrasi atau komisi apa pun.</p>
+                
+                <p style="margin-top: 10px;"><strong>2. Keanggotaan & Verifikasi</strong><br>Akses ke platform hanya diberikan kepada mahasiswa aktif yang memiliki NIM dan password yang sah. Pengguna bertanggung jawab penuh atas kerahasiaan akun dan aktivitasnya.</p>
+                
+                <p style="margin-top: 10px;"><strong>3. Mekanisme Pembayaran</strong><br>Platform TIDAK menyediakan fitur pembayaran di dalam sistem (in-app payment). Segala transaksi keuangan dilakukan secara langsung antar pengguna. Platform tidak bertanggung jawab atas kegagalan pembayaran atau penipuan finansial.</p>
+                
+                <p style="margin-top: 10px;"><strong>4. Ketentuan Pekerjaan</strong><br>Dilarang memposting pekerjaan yang melanggar hukum, norma kesusilaan, atau aturan akademik (misal: joki ujian/skripsi). Deskripsi harus jelas: tugas, lokasi, dan imbalan.</p>
+                
+                <p style="margin-top: 10px;"><strong>5. Batasan Tanggung Jawab</strong><br>- Risiko Mandiri: Interaksi antar mahasiswa dilakukan atas risiko masing-masing.<br>- Keamanan: Platform tidak bertanggung jawab atas kehilangan barang, kerusakan, atau kecelakaan saat pelaksanaan tugas.<br>- Keakuratan Data: Kami tidak memverifikasi kebenaran setiap postingan.</p>
+                
+                <p style="margin-top: 10px;"><strong>6. Pelanggaran & Sanksi</strong><br>Penyalahgunaan akun/penipuan akan ditindak dengan pemblokiran NIM permanen. Jika ada indikasi tindak pidana, data log akan diserahkan ke pihak kampus.</p>
+                
+                <p style="margin-top: 10px;"><strong>7. Privasi Data</strong><br>NIM dan data profil hanya digunakan untuk verifikasi internal komunitas dan tidak akan diperjualbelikan.</p>
+            </div>
+
+            <button id="btn-agree" class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--yellow);">SAYA SETUJU & MENGERTI</button>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL (Login/Register) -->
+    <div id="auth-modal" class="overlay" style="display: none;">
+        <div class="modal-content neo-border bauhaus-shadow">
+            <h2 id="auth-title">LOGIN SERA</h2>
+            <form id="auth-form">
+                <div id="register-fields" style="display: none;">
+                    <div class="form-group">
+                        <label>NAMA LENGKAP</label>
+                        <input type="text" id="auth-name" class="form-control" placeholder="Budi Santoso">
+                    </div>
+                    <div class="form-group">
+                        <label>NOMOR WHATSAPP (Wajib aktif)</label>
+                        <input type="number" id="auth-wa" class="form-control" placeholder="628123456789">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>NIM (Digunakan sbg Email)</label>
+                    <input type="text" id="auth-nim" class="form-control" placeholder="2021001" required>
+                </div>
+                <div class="form-group">
+                    <label>PASSWORD</label>
+                    <input type="password" id="auth-pass" class="form-control" placeholder="Minimal 6 karakter" required>
+                </div>
+                <button type="submit" class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--blue); color: white; margin-top: 1rem;">MASUK</button>
+            </form>
+            <p style="margin-top: 1rem; text-align: center; font-size: 0.9rem;">
+                <span id="auth-switch-text">Belum punya akun?</span> 
+                <a href="#" id="auth-switch-btn" style="color: var(--red); font-weight: bold;">Daftar di sini</a>
+            </p>
+        </div>
+    </div>
+
+    
+
+    <!-- JOB DETAIL MODAL -->
+    <div id="job-modal" class="overlay" style="display: none;">
+        <div class="modal-content neo-border bauhaus-shadow">
+            <span class="material-symbols-outlined close-btn" onclick="closeJobModal()">close</span>
+            <h2 id="modal-title" style="font-size: 1.5rem; line-height:1.2; margin-bottom: 1rem; margin-top:0.5rem;">Judul Tugas</h2>
+            <div style="margin-bottom: 1.5rem;">
+                <span class="job-status headline" id="modal-status">OPEN</span>
+                <span class="job-price" id="modal-price" style="display: inline-block; margin-left: 0.5rem;">Rp 0</span>
+            </div>
+            
+            <p id="modal-desc" style="font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;"></p>
+            
+            <div style="background: rgba(26,26,26,0.05); padding: 1rem; border: 2px solid var(--primary); margin-bottom: 1.5rem;">
+                <div style="margin-bottom: 0.5rem; font-size: 0.85rem;">
+                    <strong><span class="material-symbols-outlined" style="font-size: 16px;">location_on</span> Lokasi:</strong> <span id="modal-loc"></span>
+                </div>
+                <div style="font-size: 0.85rem;">
+                    <strong><span class="material-symbols-outlined" style="font-size: 16px;">schedule</span> Deadline:</strong> <span id="modal-deadline"></span>
+                </div>
+            </div>
+
+            <div id="modal-action-container">
+                <!-- Tombol Ambil Kerjaan akan di-inject ke sini via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- APP SHELL -->
+    <div id="app-container">
+        <header class="neo-border-b neo-shadow">
+            <span class="material-symbols-outlined">grid_view</span>
+            <h1>SERA.</h1>
+            <span class="material-symbols-outlined" id="btn-logout" style="cursor:pointer; color: var(--red);" title="Logout">logout</span>
+        </header>
+
+        <!-- PAGE: FEED -->
+        <main id="page-feed" class="page-section active">
+            <div class="hero-banner neo-border bauhaus-shadow">
+                <h2>BURSA KERJAAN</h2>
+                <p style="font-weight: bold; font-size: 0.9rem;">Sikat selagi ada!</p>
+            </div>
+            <div id="feed-container">
+                <p style="text-align: center;">Memuat pekerjaan...</p>
+            </div>
+            <!-- Tombol Inject Data Dummy -->
+<button onclick="injectDummyJobs()" class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--red); color: white; margin-top: 2rem;">
+    ⚠️ INJECT 10 DATA DUMMY
+</button>
+        </main>
+
+        <!-- PAGE: POST -->
+        <main id="page-post" class="page-section">
+            <h2 class="headline" style="font-size: 2.5rem; margin-bottom: 1rem; border-left: 8px solid var(--primary); padding-left: 10px;">POST TUGAS</h2>
+            <div class="neo-border bauhaus-shadow" style="background: var(--white); padding: 1.5rem;">
+                <form id="post-form">
+                    <div class="form-group">
+                        <label>JUDUL TUGAS</label>
+                        <input type="text" id="post-title" class="form-control" placeholder="Contoh: Temenin Lari Sore" required>
+                    </div>
+                    <div class="form-group">
+                        <label>DESKRIPSI DETAIL</label>
+                        <textarea id="post-desc" class="form-control" rows="3" placeholder="Jelaskan spesifikasinya..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>LOKASI</label>
+                        <input type="text" id="post-loc" class="form-control" placeholder="Kosan / Kampus" required>
+                    </div>
+                    <div class="form-group">
+                        <label>DEADLINE</label>
+                        <input type="datetime-local" id="post-deadline" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>IMBALAN / HARGA</label>
+                        <input type="text" id="post-reward" class="form-control" placeholder="Rp 15.000 via QRIS" style="font-family: 'Space Grotesk', sans-serif; font-weight: bold;" required>
+                    </div>
+                    <button type="submit" class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--yellow); margin-top: 1rem;">POST SEKARANG</button>
+                </form>
+            </div>
+        </main>
+
+        <!-- PAGE: MY JOBS -->
+        <main id="page-myjobs" class="page-section">
+            <h2 class="headline" style="font-size: 2.5rem; margin-bottom: 1rem; border-left: 8px solid var(--primary); padding-left: 10px;">MY JOBS</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="loadMyJobs('created')">DIBUAT</button>
+                <button class="tab-btn" onclick="loadMyJobs('taken')">DIAMBIL</button>
+            </div>
+            <div id="myjobs-container"></div>
+        </main>
+
+        <!-- PAGE: PROFILE -->
+        <main id="page-profile" class="page-section">
+            <h2 class="headline" style="font-size: 2.5rem; margin-bottom: 1rem; border-left: 8px solid var(--primary); padding-left: 10px;">PROFIL</h2>
+            
+            <!-- STATISTIK -->
+            <div class="stats-grid">
+                <div class="stat-box neo-border bauhaus-shadow">
+                    <div class="stat-num" id="stat-created">0</div>
+                    <div class="stat-label">Tugas Dibuat</div>
+                </div>
+                <div class="stat-box neo-border bauhaus-shadow" style="background: var(--primary); color: white;">
+                    <div class="stat-num" id="stat-completed" style="color: var(--yellow);">0</div>
+                    <div class="stat-label" style="color: white;">Diselesaikan</div>
+                </div>
+            </div>
+
+            <!-- EDIT PROFIL -->
+            <div class="neo-border bauhaus-shadow" style="background: var(--white); padding: 1.5rem;">
+                <h3 class="headline" style="font-size: 1.2rem; margin-bottom: 1rem; border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem;">DATA DIRI</h3>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label>NIM (Tidak bisa diubah)</label>
+                        <input type="text" id="prof-nim" class="form-control" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>NAMA LENGKAP</label>
+                        <input type="text" id="prof-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>NOMOR WHATSAPP</label>
+                        <input type="number" id="prof-wa" class="form-control" required>
+                    </div>
+                    <button type="submit" class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--blue); color: white; margin-top: 1rem;">SIMPAN PERUBAHAN</button>
+                    <!-- TOMBOL BACA TERMS DI PROFIL -->
+            <button onclick="bacaTermsLagi()" class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--white); margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <span class="material-symbols-outlined">gavel</span> BACA SYARAT & KETENTUAN
+            </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- NAVIGATION -->
+        <nav class="neo-border-t">
+            <button class="nav-item active" onclick="switchTab('feed', this)">
+                <span class="material-symbols-outlined">dashboard</span><span class="label">FEED</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('post', this)">
+                <span class="material-symbols-outlined">add_box</span><span class="label">POST</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('myjobs', this); loadMyJobs('created');">
+                <span class="material-symbols-outlined">work_history</span><span class="label">MY JOBS</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('profile', this); loadProfile();">
+                <span class="material-symbols-outlined">person</span><span class="label">PROFIL</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- FIREBASE MODULAR SDK & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, updateDoc, doc, setDoc, getDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+        // ==========================================
+        // ⚠️ MASUKKAN CONFIG FIREBASE KAMU DI SINI
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyB_2hSot9F71uFftL2j6pi-PypBti8aaog",
+            authDomain: "seraapp-79139.firebaseapp.com",
+            projectId: "seraapp-79139",
+            storageBucket: "seraapp-79139.firebasestorage.app",
+            messagingSenderId: "277828970778",
+            appId: "1:277828970778:web:8f2e7512e23adc410424a3",
+            measurementId: "G-W40CFCC7TE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserData = null; 
+
+        // ==========================================
+        // 1. LOGIKA TERMS & CONDITIONS (TARUH DI SINI)
+        // ==========================================
+        const termsModal = document.getElementById('terms-modal');
+        const btnAgree = document.getElementById('btn-agree');
+
+        // Cek localStorage, kalau 'true' langsung sembunyikan
+        if(localStorage.getItem('sera_terms_agreed') === 'true') {
+            termsModal.style.display = 'none';
+        } else {
+            // Pastikan modal tampil jika belum pernah setuju
+            termsModal.style.display = 'flex';
+        }
+
+        // Action saat tombol di-klik
+        btnAgree.addEventListener('click', function() {
+            termsModal.style.display = 'none';
+            localStorage.setItem('sera_terms_agreed', 'true');
+            
+            // Kembalikan teks tombol untuk fitur "Baca Lagi" di Profil
+            btnAgree.innerText = "SAYA SETUJU & MENGERTI";
+            btnAgree.style.background = "var(--yellow)";
+        });
+
+        // Fungsi Global untuk dipanggil dari Halaman Profil
+        window.bacaTermsLagi = function() {
+            termsModal.style.display = 'flex';
+            btnAgree.innerText = "TUTUP";
+            btnAgree.style.background = "var(--bg-color)";
+        };
+        
+        // --- AUTH STATE LISTENER ---
+        const authModal = document.getElementById('auth-modal');
+        const appContainer = document.getElementById('app-container');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                authModal.style.display = 'none';
+                appContainer.style.display = 'block';
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) currentUserData = userDoc.data();
+                loadFeed();
+            } else {
+                authModal.style.display = 'flex';
+                appContainer.style.display = 'none';
+            }
+        });
+
+        // --- LOGIC LOGIN / REGISTER ---
+        let isLoginMode = true;
+        document.getElementById('auth-switch-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? "LOGIN SERA" : "DAFTAR SERA";
+            document.getElementById('register-fields').style.display = isLoginMode ? "none" : "block";
+            document.getElementById('auth-switch-text').innerText = isLoginMode ? "Belum punya akun?" : "Sudah punya akun?";
+            document.getElementById('auth-switch-btn').innerText = isLoginMode ? "Daftar di sini" : "Login di sini";
+        });
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nim = document.getElementById('auth-nim').value;
+            const pass = document.getElementById('auth-pass').value;
+            const emailDummy = `${nim}@stmik.edu`; 
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, emailDummy, pass);
+                } else {
+                    const name = document.getElementById('auth-name').value;
+                    let wa = document.getElementById('auth-wa').value;
+                    if(wa.startsWith('0')) wa = '62' + wa.substring(1); 
+
+                    const userCred = await createUserWithEmailAndPassword(auth, emailDummy, pass);
+                    const newUserData = {
+                        uid: userCred.user.uid, nim: nim, nama: name, no_wa: wa, created_at: serverTimestamp()
+                    };
+                    await setDoc(doc(db, "users", userCred.user.uid), newUserData);
+                    currentUserData = newUserData; 
+                    alert("Pendaftaran Berhasil!");
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', () => signOut(auth));
+
+        // --- TAB NAVIGATION ---
+        window.switchTab = function(pageId, btnElement) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            btnElement.classList.add('active');
+            window.scrollTo(0, 0);
+            if(pageId === 'feed') loadFeed();
+        };
+
+        // --- POST JOB ---
+        document.getElementById('post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = e.target.querySelector('button');
+            btnSubmit.innerText = "MEMPROSES...";
+
+            try {
+                if (!currentUserData || !currentUserData.no_wa) {
+                    const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+                    if (userDoc.exists()) currentUserData = userDoc.data();
+                    else throw new Error("Data profil tidak ditemukan.");
+                }
+
+                await addDoc(collection(db, "jobs"), {
+                    creator_id: auth.currentUser.uid,
+                    creator_wa: currentUserData.no_wa,
+                    taker_id: null,
+                    judul: document.getElementById('post-title').value,
+                    deskripsi: document.getElementById('post-desc').value,
+                    lokasi: document.getElementById('post-loc').value,
+                    imbalan: document.getElementById('post-reward').value,
+                    deadline: document.getElementById('post-deadline').value,
+                    status: "OPEN",
+                    timestamp: serverTimestamp()
+                });
+                alert("Tugas berhasil diposting!");
+                e.target.reset();
+                document.querySelector('.nav-item').click(); // ke Feed
+                loadFeed();
+            } catch (error) {
+                alert("Gagal posting: " + error.message);
+            } finally {
+                btnSubmit.innerText = "POST SEKARANG";
+            }
+        });
+
+        // --- LOAD FEED ---
+        let allJobsCache = {}; // Untuk menyimpan data detail sementara
+        async function loadFeed() {
+            const feedContainer = document.getElementById('feed-container');
+            feedContainer.innerHTML = "<p style='text-align:center;'>Memuat...</p>";
+            try {
+                const q = query(collection(db, "jobs"), where("status", "==", "OPEN"));
+                const querySnapshot = await getDocs(q);
+                feedContainer.innerHTML = "";
+                allJobsCache = {};
+                
+                if(querySnapshot.empty) {
+                    feedContainer.innerHTML = "<p style='text-align:center;'>Belum ada kerjaan hari ini.</p>";
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const job = docSnap.data();
+                    allJobsCache[docSnap.id] = job; // Simpan ke cache
+                    
+                    if(job.creator_id === auth.currentUser.uid) return; 
+                    
+                    const card = `
+                        <div class="job-card neo-border bauhaus-shadow">
+                            <div class="job-header">
+                                <span class="job-status headline">${job.status}</span>
+                                <span class="job-price">${job.imbalan}</span>
+                            </div>
+                            <div class="job-body">
+                                <h3 style="font-size: 1.3rem; margin-bottom:0.5rem;">${job.judul}</h3>
+                                <p class="truncate-text" style="font-size:0.85rem; margin-bottom:1rem;">${job.deskripsi}</p>
+                                <button class="neo-btn btn-action neo-border" onclick="openJobModal('${docSnap.id}')">LIHAT DETAIL</button>
+                            </div>
+                        </div>
+                    `;
+                    feedContainer.innerHTML += card;
+                });
+            } catch (error) {
+                feedContainer.innerHTML = "<p>Gagal memuat data.</p>";
+            }
+        }
+
+        // --- MODAL DETAIL TUGAS ---
+        window.openJobModal = function(jobId) {
+            const job = allJobsCache[jobId];
+            if(!job) return;
+
+            document.getElementById('modal-title').innerText = job.judul;
+            document.getElementById('modal-status').innerText = job.status;
+            document.getElementById('modal-price').innerText = job.imbalan;
+            document.getElementById('modal-desc').innerText = job.deskripsi;
+            document.getElementById('modal-loc').innerText = job.lokasi;
+            
+            // Format Tanggal
+            const dl = new Date(job.deadline);
+            document.getElementById('modal-deadline').innerText = dl.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+            // Set Action Button
+            const actionContainer = document.getElementById('modal-action-container');
+            actionContainer.innerHTML = `<button class="neo-btn neo-shadow" style="width: 100%; padding: 1rem; background: var(--yellow); font-size: 1.2rem;" onclick="ambilKerjaan('${jobId}', '${job.creator_wa}', '${job.judul}')">AMBIL KERJAAN INI</button>`;
+
+            document.getElementById('job-modal').style.display = 'flex';
+        }
+
+        window.closeJobModal = function() {
+            document.getElementById('job-modal').style.display = 'none';
+        }
+
+        window.ambilKerjaan = async function(jobId, creatorWa, jobTitle) {
+            if(!confirm("Yakin ingin mengambil tugas ini?")) return;
+            try {
+                await updateDoc(doc(db, "jobs", jobId), {
+                    status: "TAKEN", taker_id: auth.currentUser.uid
+                });
+                closeJobModal();
+                const msg = encodeURIComponent(`Halo! Saya dari SERA, saya yang ambil tugas "${jobTitle}". Boleh info lebih lanjut?`);
+                window.open(`https://wa.me/${creatorWa}?text=${msg}`, '_blank');
+                loadFeed(); 
+            } catch (error) {
+                alert("Gagal mengambil tugas.");
+            }
+        };
+
+        // --- LOAD MY JOBS ---
+        window.loadMyJobs = async function(tipe) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs[0].classList.toggle('active', tipe === 'created');
+            tabs[1].classList.toggle('active', tipe === 'taken');
+
+            const container = document.getElementById('myjobs-container');
+            container.innerHTML = "<p style='text-align:center;'>Memuat...</p>";
+
+            try {
+                let q = tipe === 'created' 
+                    ? query(collection(db, "jobs"), where("creator_id", "==", auth.currentUser.uid))
+                    : query(collection(db, "jobs"), where("taker_id", "==", auth.currentUser.uid));
+
+                const querySnapshot = await getDocs(q);
+                container.innerHTML = "";
+
+                if(querySnapshot.empty) {
+                    container.innerHTML = `<div class="neo-border bauhaus-shadow" style="background:white; padding:1.5rem; text-align:center;">Belum ada riwayat.</div>`;
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const job = docSnap.data();
+                    let actionBtn = "";
+
+                    if(tipe === 'created' && job.status === "TAKEN") {
+                        actionBtn = `<button class="neo-btn btn-action neo-shadow" style="background:var(--blue); color:white; padding:0.8rem;" onclick="selesaikanTugas('${docSnap.id}')">TANDAI SELESAI</button>`;
+                    } else if (tipe === 'taken' && job.status === "TAKEN") {
+                        actionBtn = `<button class="neo-btn btn-wa neo-shadow" style="padding:0.8rem; font-size:1rem;" onclick="window.open('https://wa.me/${job.creator_wa}', '_blank')">HUBUNGI PEMBUAT</button>`;
+                    }
+
+                    const card = `
+                        <div class="job-card neo-border bauhaus-shadow">
+                            <div class="job-header">
+                                <span class="job-status ${job.status} headline">${job.status}</span>
+                            </div>
+                            <div class="job-body">
+                                <h3 style="font-size:1.2rem;">${job.judul}</h3>
+                                <p style="font-size:0.8rem; margin:0.5rem 0;">Imbalan: <strong>${job.imbalan}</strong></p>
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            } catch (error) {
+                container.innerHTML = "<p>Gagal memuat riwayat.</p>";
+            }
+        };
+
+        window.selesaikanTugas = async function(jobId) {
+            if(!confirm("Tandai tugas ini sudah selesai & imbalan sudah diberikan?")) return;
+            try {
+                await updateDoc(doc(db, "jobs", jobId), { status: "COMPLETED" });
+                loadMyJobs('created');
+            } catch (error) {
+                alert("Gagal update status.");
+            }
+        };
+
+        // --- PROFILE & STATISTIK ---
+        window.loadProfile = async function() {
+            if(!currentUserData) return;
+            
+            // Isi form data diri
+            document.getElementById('prof-nim').value = currentUserData.nim;
+            document.getElementById('prof-name').value = currentUserData.nama;
+            document.getElementById('prof-wa').value = currentUserData.no_wa;
+
+            // Hitung Statistik
+            try {
+                // 1. Tugas Dibuat
+                const qCreated = query(collection(db, "jobs"), where("creator_id", "==", auth.currentUser.uid));
+                const snapCreated = await getDocs(qCreated);
+                document.getElementById('stat-created').innerText = snapCreated.size;
+
+                // 2. Tugas Diselesaikan (Diambil & Status Completed)
+                const qTaken = query(collection(db, "jobs"), where("taker_id", "==", auth.currentUser.uid), where("status", "==", "COMPLETED"));
+                const snapTaken = await getDocs(qTaken);
+                document.getElementById('stat-completed').innerText = snapTaken.size;
+            } catch(e) {
+                console.error("Gagal memuat statistik", e);
+            }
+        }
+
+        // Simpan Perubahan Profil
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "MENYIMPAN...";
+            
+            try {
+                const newName = document.getElementById('prof-name').value;
+                const newWa = document.getElementById('prof-wa').value;
+                
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    nama: newName,
+                    no_wa: newWa
+                });
+                
+                currentUserData.nama = newName;
+                currentUserData.no_wa = newWa;
+                alert("Profil berhasil diperbarui!");
+            } catch (error) {
+                alert("Gagal menyimpan: " + error.message);
+            } finally {
+                btn.innerText = "SIMPAN PERUBAHAN";
+            }
+        });
+
+
+
+        // --- SCRIPT DATABASE SEEDER (DUMMY JOBS) ---
+        window.injectDummyJobs = async function() {
+            if(!confirm("Yakin mau inject 10 data kerjaan dummy?")) return;
+            
+            // Cek apakah user sudah login dan datanya siap
+            if (!currentUserData || !currentUserData.no_wa) {
+                alert("Data profil belum siap, pastikan kamu sudah login.");
+                return;
+            }
+
+            try {
+                for(let i = 1; i <= 10; i++) {
+                    // Generate harga acak kelipatan 5.000 (dari 10rb - 50rb)
+                    const randomHarga = (Math.floor(Math.random() * 9) + 2) * 5000; 
+
+                    // Generate deadline besok
+                    const besok = new Date();
+                    besok.setDate(besok.getDate() + 1);
+                    
+                    await addDoc(collection(db, "jobs"), {
+                        creator_id: auth.currentUser.uid,
+                        creator_wa: currentUserData.no_wa,
+                        taker_id: null,
+                        judul: `Tugas Serabutan Dummy #${i}`,
+                        deskripsi: `Ini adalah deskripsi otomatis untuk tugas dummy nomor ${i}. Tolong bantu secepatnya ya!`,
+                        lokasi: `Area Kampus Blok ${String.fromCharCode(64 + i)}`, // Menghasilkan Blok A, Blok B, dst.
+                        imbalan: `Rp ${randomHarga.toLocaleString('id-ID')}`,
+                        deadline: besok.toISOString().slice(0, 16),
+                        status: "OPEN",
+                        timestamp: serverTimestamp()
+                    });
+                }
+                alert("10 Data berhasil disuntikkan! Silakan cek Feed.");
+                loadFeed(); // Refresh halaman feed
+            } catch (error) {
+                alert("Gagal inject data: " + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+

@@ -83,15 +83,15 @@
             <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">SYARAT & KETENTUAN SERA</h2>
             
             <div style="font-size: 0.85rem; line-height: 1.6; max-height: 50vh; overflow-y: auto; padding-right: 10px; margin-bottom: 1.5rem; border: 2px solid var(--primary); padding: 1rem; background: rgba(255,255,255,0.5);">
-                <p><strong>1. Deskripsi Layanan</strong><br>SERA adalah wadah penghubung antar mahasiswa STMIK Bandung untuk berbagi tugas/pekerjaan lepas (freelance) secara sukarela dan mandiri. Platform ini bersifat non-profit dan tidak memungut biaya administrasi atau komisi apa pun.</p>
+                <p><strong>1. Deskripsi Layanan</strong><br>SERA adalah wadah penghubung antar mahasiswa STMIK Bandung untuk berbagi kerjaan/pekerjaan lepas (freelance) secara sukarela dan mandiri. Platform ini bersifat non-profit dan tidak memungut biaya administrasi atau komisi apa pun.</p>
                 
                 <p style="margin-top: 10px;"><strong>2. Keanggotaan & Verifikasi</strong><br>Akses ke platform hanya diberikan kepada mahasiswa aktif yang memiliki NIM dan password yang sah. Pengguna bertanggung jawab penuh atas kerahasiaan akun dan aktivitasnya.</p>
                 
                 <p style="margin-top: 10px;"><strong>3. Mekanisme Pembayaran</strong><br>Platform TIDAK menyediakan fitur pembayaran di dalam sistem (in-app payment). Segala transaksi keuangan dilakukan secara langsung antar pengguna. Platform tidak bertanggung jawab atas kegagalan pembayaran atau penipuan finansial.</p>
                 
-                <p style="margin-top: 10px;"><strong>4. Ketentuan Pekerjaan</strong><br>Dilarang memposting pekerjaan yang melanggar hukum, norma kesusilaan, atau aturan akademik (misal: joki ujian/skripsi). Deskripsi harus jelas: tugas, lokasi, dan imbalan.</p>
+                <p style="margin-top: 10px;"><strong>4. Ketentuan Pekerjaan</strong><br>Dilarang memposting pekerjaan yang melanggar hukum, norma kesusilaan, atau aturan akademik (misal: joki ujian/skripsi). Deskripsi harus jelas: kerjaan, lokasi, dan imbalan.</p>
                 
-                <p style="margin-top: 10px;"><strong>5. Batasan Tanggung Jawab</strong><br>- Risiko Mandiri: Interaksi antar mahasiswa dilakukan atas risiko masing-masing.<br>- Keamanan: Platform tidak bertanggung jawab atas kehilangan barang, kerusakan, atau kecelakaan saat pelaksanaan tugas.<br>- Keakuratan Data: Kami tidak memverifikasi kebenaran setiap postingan.</p>
+                <p style="margin-top: 10px;"><strong>5. Batasan Tanggung Jawab</strong><br>- Risiko Mandiri: Interaksi antar mahasiswa dilakukan atas risiko masing-masing.<br>- Keamanan: Platform tidak bertanggung jawab atas kehilangan barang, kerusakan, atau kecelakaan saat pelaksanaan kerjaan.<br>- Keakuratan Data: Kami tidak memverifikasi kebenaran setiap postingan.</p>
                 
                 <p style="margin-top: 10px;"><strong>6. Pelanggaran & Sanksi</strong><br>Penyalahgunaan akun/penipuan akan ditindak dengan pemblokiran NIM permanen. Jika ada indikasi tindak pidana, data log akan diserahkan ke pihak kampus.</p>
                 
@@ -140,7 +140,7 @@
     <div id="job-modal" class="overlay" style="display: none;">
         <div class="modal-content neo-border bauhaus-shadow">
             <span class="material-symbols-outlined close-btn" onclick="closeJobModal()">close</span>
-            <h2 id="modal-title" style="font-size: 1.5rem; line-height:1.2; margin-bottom: 1rem; margin-top:0.5rem;">Judul Tugas</h2>
+            <h2 id="modal-title" style="font-size: 1.5rem; line-height:1.2; margin-bottom: 1rem; margin-top:0.5rem;">Judul Kerjaan</h2>
             <div style="margin-bottom: 1.5rem;">
                 <span class="job-status headline" id="modal-status">OPEN</span>
                 <span class="job-price" id="modal-price" style="display: inline-block; margin-left: 0.5rem;">Rp 0</span>
@@ -174,7 +174,7 @@
         <!-- PAGE: FEED -->
         <main id="page-feed" class="page-section active">
             <div class="hero-banner neo-border bauhaus-shadow">
-                <h2>BURSA KERJAAN</h2>
+                <h2>19jt KERJAAN</h2>
                 <p style="font-weight: bold; font-size: 0.9rem;">Sikat selagi ada!</p>
             </div>
             <div id="feed-container">
@@ -188,11 +188,11 @@
 
         <!-- PAGE: POST -->
         <main id="page-post" class="page-section">
-            <h2 class="headline" style="font-size: 2.5rem; margin-bottom: 1rem; border-left: 8px solid var(--primary); padding-left: 10px;">POST TUGAS</h2>
+            <h2 class="headline" style="font-size: 2.5rem; margin-bottom: 1rem; border-left: 8px solid var(--primary); padding-left: 10px;">POST KERJAAN</h2>
             <div class="neo-border bauhaus-shadow" style="background: var(--white); padding: 1.5rem;">
                 <form id="post-form">
                     <div class="form-group">
-                        <label>JUDUL TUGAS</label>
+                        <label>JUDUL KERJAAN</label>
                         <input type="text" id="post-title" class="form-control" placeholder="Contoh: Temenin Lari Sore" required>
                     </div>
                     <div class="form-group">
@@ -234,7 +234,7 @@
             <div class="stats-grid">
                 <div class="stat-box neo-border bauhaus-shadow">
                     <div class="stat-num" id="stat-created">0</div>
-                    <div class="stat-label">Tugas Dibuat</div>
+                    <div class="stat-label">Kerjaan Dibuat</div>
                 </div>
                 <div class="stat-box neo-border bauhaus-shadow" style="background: var(--primary); color: white;">
                     <div class="stat-num" id="stat-completed" style="color: var(--yellow);">0</div>
@@ -435,7 +435,7 @@
                     status: "OPEN",
                     timestamp: serverTimestamp()
                 });
-                alert("Tugas berhasil diposting!");
+                alert("kerjaan berhasil diposting!");
                 e.target.reset();
                 document.querySelector('.nav-item').click(); // ke Feed
                 loadFeed();
@@ -488,7 +488,7 @@
             }
         }
 
-        // --- MODAL DETAIL TUGAS ---
+        // --- MODAL DETAIL kerjaan ---
         window.openJobModal = function(jobId) {
             const job = allJobsCache[jobId];
             if(!job) return;
@@ -515,17 +515,17 @@
         }
 
         window.ambilKerjaan = async function(jobId, creatorWa, jobTitle) {
-            if(!confirm("Yakin ingin mengambil tugas ini?")) return;
+            if(!confirm("Yakin ingin mengambil kerjaan ini?")) return;
             try {
                 await updateDoc(doc(db, "jobs", jobId), {
                     status: "TAKEN", taker_id: auth.currentUser.uid
                 });
                 closeJobModal();
-                const msg = encodeURIComponent(`Halo! Saya dari SERA, saya yang ambil tugas "${jobTitle}". Boleh info lebih lanjut?`);
+                const msg = encodeURIComponent(`Halo! Saya dari SERA, saya yang ambil kerjaan "${jobTitle}". Boleh info lebih lanjut?`);
                 window.open(`https://wa.me/${creatorWa}?text=${msg}`, '_blank');
                 loadFeed(); 
             } catch (error) {
-                alert("Gagal mengambil tugas.");
+                alert("Gagal mengambil kerjaan.");
             }
         };
 
@@ -581,7 +581,7 @@
         };
 
         window.selesaikanTugas = async function(jobId) {
-            if(!confirm("Tandai tugas ini sudah selesai & imbalan sudah diberikan?")) return;
+            if(!confirm("Tandai kerjaan ini sudah selesai & imbalan sudah diberikan?")) return;
             try {
                 await updateDoc(doc(db, "jobs", jobId), { status: "COMPLETED" });
                 loadMyJobs('created');
@@ -601,12 +601,12 @@
 
             // Hitung Statistik
             try {
-                // 1. Tugas Dibuat
+                // 1. kerjaan Dibuat
                 const qCreated = query(collection(db, "jobs"), where("creator_id", "==", auth.currentUser.uid));
                 const snapCreated = await getDocs(qCreated);
                 document.getElementById('stat-created').innerText = snapCreated.size;
 
-                // 2. Tugas Diselesaikan (Diambil & Status Completed)
+                // 2. kerjaan Diselesaikan (Diambil & Status Completed)
                 const qTaken = query(collection(db, "jobs"), where("taker_id", "==", auth.currentUser.uid), where("status", "==", "COMPLETED"));
                 const snapTaken = await getDocs(qTaken);
                 document.getElementById('stat-completed').innerText = snapTaken.size;
@@ -666,7 +666,7 @@
                         creator_wa: currentUserData.no_wa,
                         taker_id: null,
                         judul: `Tugas Serabutan Dummy #${i}`,
-                        deskripsi: `Ini adalah deskripsi otomatis untuk tugas dummy nomor ${i}. Tolong bantu secepatnya ya!`,
+                        deskripsi: `Ini adalah deskripsi otomatis untuk kerjaan dummy nomor ${i}. Tolong bantu secepatnya ya!`,
                         lokasi: `Area Kampus Blok ${String.fromCharCode(64 + i)}`, // Menghasilkan Blok A, Blok B, dst.
                         imbalan: `Rp ${randomHarga.toLocaleString('id-ID')}`,
                         deadline: besok.toISOString().slice(0, 16),
